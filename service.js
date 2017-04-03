@@ -9,10 +9,10 @@ Service.prototype.connect = function() {
   }.bind(this));
 this.appClient.connect();
  this.appClient.on('deviceEvent', function(deviceType, deviceId, eventType, format, payload) {
-       
-       if(payload.d.hasOwnProperty('temperature')){
-          console.log('Temperature Recieved is ' + payload.d.temperature);
-          new Service(this.appClient).handleTempEvent(payload.d.temperature);
+       var payloadtemp = JSON.parse(payload);
+       if(payloadtemp.d.hasOwnProperty('temperature')){
+          console.log('Temperature Recieved is ' + payloadtemp.d.temperature);
+          this.handleTempEvent(parseInt(payloadtemp.d.temperature));
       }
     }.bind(this));
 };
@@ -31,16 +31,16 @@ oldTemp=temp;
 Service.prototype.warningOn = function() {
         var myData={'screen' : 'on'};
         myData = JSON.stringify(myData);
-        var publish=new Service(this.appClient)
-        publish.appClient.publishDeviceCommand("RaspberryPi","b827ebbeaccc", "display", "json", myData);
+        //var publish=new Service(this.appClient)
+        this.publishDeviceCommand("RaspberryPi","b827ebbeaccc", "display", "json", myData);
        
     };
 
 Service.prototype.warningOff = function() {
         var myData={'screen' : 'off'};
         myData = JSON.stringify(myData);
-        var publish=new Service(this.appClient)
-        publish.appClient.publishDeviceCommand("RaspberryPi","b827ebbeaccc", "display", "json", myData);
+        //var publish=new Service(this.appClient)
+        this.appClient.publishDeviceCommand("RaspberryPi","b827ebbeaccc", "display", "json", myData);
        
     };
 
